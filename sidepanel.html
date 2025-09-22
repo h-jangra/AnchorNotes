@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Symbol Emoji Picker</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .input {
+                font-size: 24px;
+                background-color: hsl(180 100% 40%);
+                color: #eeeeee;
+                border-radius: 5px;
+                border: 0;
+                padding: 5px;
+                text-align: center;
+            }
+            input {
+                width: 50px;
+            }
+            button:hover {
+                cursor: pointer;
+                color: #eeeeee;
+                background-color: #00bccd;
+            }
+            #emojiPopover {
+                display: none;
+                position: absolute;
+                border: 1px solid #ccc;
+                background: #fff;
+                padding: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                flex-wrap: wrap;
+                gap: 8px;
+                max-width: 300px;
+                display: flex;
+            }
+            .emoji-btn {
+                font-size: 24px;
+                cursor: pointer;
+                border: none;
+                background: transparent;
+                padding: 5px;
+            }
+            .emoji-btn:hover {
+                background-color: #f0f0f0;
+                border-radius: 5px;
+            }
+            .control-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+            .slider-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <pre id="response"></pre>
+        <div class="control-group">
+            <h1>Emoji Options</h1>
+            <div>
+                <input
+                    type="text"
+                    id="emojiInput"
+                    maxlength="1"
+                    placeholder="★"
+                    class="input"
+                />
+                <button id="saveEmoji" class="input">Save</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="sizeSlider">Selected Emoji Size</label>
+            <div class="slider-container">
+                <input
+                    type="range"
+                    id="sizeSlider"
+                    min="16"
+                    max="128"
+                    value="24"
+                />
+                <span id="sizeValue">24px</span>
+            </div>
+        </div>
+        <div id="emojiPopover"></div>
+    </body>
+    <script src="script/sidepanel.js"></script>
+</html>
