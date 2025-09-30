@@ -8,21 +8,21 @@ body {
     gap: 8px;
 }
 
-.input {
-  height: 44px;
+.input {
+  height: 44px;
   width: 44px;
-  background-color: #05060f0a;
-  border-radius: .5rem;
-  padding: 0; 
-  border: 2px solid transparent;
+  background-color: #05060f0a;
+  border-radius: .5rem;
+  padding: 0;
+  border: 2px solid transparent;
   font-size: 2rem;
-  outline: none;
-}
-
-.input:focus {
-  border-color: #007bff;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
+}
 button {
     font-size: 1rem;
     color: #fefefe;

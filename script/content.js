@@ -69,7 +69,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// --- Utility Functions ---
 function debounce(func, timeout = 300) {
     let timer;
     return (...args) => {
@@ -80,33 +79,26 @@ function debounce(func, timeout = 300) {
     };
 }
 
-// --- Observers ---
-// Create a debounced version of saveAllData for performance-intensive events like resize.
 const debouncedSaveAllData = debounce(() => saveAllData(), 500);
 
-// Use a ResizeObserver to detect when a note's size changes.
 const noteResizeObserver = new ResizeObserver(() => {
     debouncedSaveAllData();
 });
 
-// Establish a long-lived connection with the background script.
-// This signals to bg.js that the content script is ready to receive messages.
 const port = chrome.runtime.connect({ name: "contentScript" });
 
 let lastRightClickedElement = null;
 let noteCounter = 0;
 
-// Store the element that was right-clicked
 document.addEventListener("contextmenu", (event) => {
     lastRightClickedElement = event.target;
 });
 
-// Listen for messages from the background script (via the port from the context menu)
 port.onMessage.addListener((message) => {
     if (message.action === "attachEmoji") {
         if (lastRightClickedElement) {
             attachEmojiToElement(message.emoji, lastRightClickedElement);
-            lastRightClickedElement = null; // Reset for next time
+            lastRightClickedElement = null;
         } else {
             console.warn(
                 "Anchor Notes: No element was targeted for emoji attachment."
@@ -115,7 +107,6 @@ port.onMessage.addListener((message) => {
     }
 });
 
-// Listen for one-off messages from other parts of the extension (like the side panel)
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "updateEmojiSize") {
         const selectedEmoji = document.querySelector(".selected-emoji");
@@ -126,10 +117,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             sendResponse({ status: "no emoji selected" });
         }
     }
-    return true; // Indicates you wish to send a response asynchronously
+    return true;
 });
 
-// Function to deselect all emojis
 function deselectAllEmojis() {
     const currentlySelected = document.querySelectorAll(".selected-emoji");
     currentlySelected.forEach((el) => {
@@ -137,17 +127,12 @@ function deselectAllEmojis() {
     });
 }
 
-// Deselect when clicking anywhere on the page that isn't an emoji
 document.addEventListener("click", (event) => {
-    // Find any visible remove button
     const removeButton = document.querySelector(".emoji-remove-btn");
-    // If a remove button is visible and the click was not on it, remove it.
-    // The remove button's own click handler stops propagation, so this is safe.
     if (removeButton && event.target !== removeButton) {
         removeButton.remove();
     }
 
-    // If the click was not on an emoji button, deselect all.
     if (!event.target.closest(".button_emoji")) {
         deselectAllEmojis();
     }
@@ -179,14 +164,13 @@ function attachEmojiToElement(emoji, targetElement) {
     const buttonId = `emojiButton-${noteCounter}`;
     const button = document.createElement("button");
     button.className = "button_emoji";
-    button.id = buttonId; // Assign an ID to the button
+    button.id = buttonId;
     button.setAttribute("popovertarget", noteId);
     button.innerHTML = `<span>${emoji}</span>`;
-    button.draggable = true; // Make the button draggable
+    button.draggable = true;
 
     button.addEventListener("dragstart", allowDrag);
 
-    // Create a "remove" button (optional, based on your requirements)
     const removeButton = document.createElement("button");
     removeButton.className = "emoji-remove-btn";
     removeButton.textContent = "x";
@@ -204,14 +188,12 @@ function attachEmojiToElement(emoji, targetElement) {
         event.stopPropagation();
         button.remove();
         emojiNoteDiv.remove();
-        saveAllData(); // Save changes after removing the elements
+        saveAllData();
     });
 
-    // Show the remove button only on right-click
     button.addEventListener("contextmenu", (event) => {
         event.preventDefault();
         event.stopPropagation();
-        // First, remove any other visible remove button
         const existingRemoveBtn = document.querySelector(".emoji-remove-btn");
         if (existingRemoveBtn) {
             existingRemoveBtn.remove();
@@ -219,30 +201,25 @@ function attachEmojiToElement(emoji, targetElement) {
         button.appendChild(removeButton);
     });
 
-    // Add click listener for selection
     button.addEventListener("click", (event) => {
-        event.stopPropagation(); // Prevent document click listener from firing
+        event.stopPropagation();
 
         const isAlreadySelected = button.classList.contains("selected-emoji");
 
-        // First, deselect any other emoji
         deselectAllEmojis();
 
-        // If it wasn't already selected, select it now. This makes the click a toggle.
         if (!isAlreadySelected) button.classList.add("selected-emoji");
     });
 
     const emojiNoteDiv = document.createElement("div");
     emojiNoteDiv.id = noteId;
-    emojiNoteDiv.className = "emoji-note-popover"; // Use a class for styling
+    emojiNoteDiv.className = "emoji-note-popover";
     emojiNoteDiv.setAttribute("contenteditable", true);
     emojiNoteDiv.setAttribute("popover", "");
 
-    // Save data automatically whenever the note content is changed or it's resized
     emojiNoteDiv.addEventListener("input", saveAllData);
     noteResizeObserver.observe(emojiNoteDiv);
 
-    // Append to body and position absolutely relative to the viewport
     const rect = targetElement.getBoundingClientRect();
     button.style.position = "absolute";
     button.style.left = `${rect.left + window.scrollX}px`;
@@ -251,7 +228,7 @@ function attachEmojiToElement(emoji, targetElement) {
 
     document.body.appendChild(button);
     document.body.appendChild(emojiNoteDiv);
-    saveAllData(); // Save data after attaching a new emoji
+    saveAllData();
 }
 
 function saveAllData() {
@@ -259,7 +236,6 @@ function saveAllData() {
     document.querySelectorAll(".button_emoji").forEach((button) => {
         const emoji = button.querySelector("span").textContent;
         const noteId = button.getAttribute("popovertarget");
-        // Ensure the note element exists before trying to get its content
         const noteElement = document.getElementById(noteId);
         const noteContent = noteElement ? noteElement.innerHTML : "";
         const noteWidth = noteElement ? noteElement.style.width : "";
@@ -284,7 +260,6 @@ function loadAllData() {
 
         let maxId = 0;
         emojiData.forEach((data) => {
-            // Extract the numeric part of the ID to update the global noteCounter
             const idNum = parseInt(data.id.split("-")[1], 10);
             if (idNum > maxId) {
                 maxId = idNum;
@@ -301,7 +276,6 @@ function loadAllData() {
             } = data;
             const noteId = `emojiNote-${idNum}`;
 
-            // Create the emoji button
             const button = document.createElement("button");
             button.className = "button_emoji";
             button.id = buttonId;
@@ -310,7 +284,6 @@ function loadAllData() {
             button.draggable = true;
             button.addEventListener("dragstart", allowDrag);
 
-            // Create the note popover
             const emojiNoteDiv = document.createElement("div");
             emojiNoteDiv.id = noteId;
             emojiNoteDiv.className = "emoji-note-popover";
@@ -319,10 +292,9 @@ function loadAllData() {
             emojiNoteDiv.innerHTML = noteContent;
             if (width) emojiNoteDiv.style.width = width;
             if (height) emojiNoteDiv.style.height = height;
-            emojiNoteDiv.addEventListener("input", saveAllData); // Save on edit
-            noteResizeObserver.observe(emojiNoteDiv); // Observe for size changes
+            emojiNoteDiv.addEventListener("input", saveAllData);
+            noteResizeObserver.observe(emojiNoteDiv);
 
-            // Create and append the remove button
             const removeButton = document.createElement("button");
             removeButton.className = "emoji-remove-btn";
             removeButton.textContent = "x";
@@ -334,11 +306,9 @@ function loadAllData() {
                 saveAllData();
             });
 
-            // Show the remove button only on right-click
             button.addEventListener("contextmenu", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                // First, remove any other visible remove button
                 const existingRemoveBtn =
                     document.querySelector(".emoji-remove-btn");
                 if (existingRemoveBtn) {
@@ -346,7 +316,6 @@ function loadAllData() {
                 }
                 button.appendChild(removeButton);
             });
-            // Add click listener for selection
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
                 const isAlreadySelected =
@@ -355,7 +324,6 @@ function loadAllData() {
                 if (!isAlreadySelected) button.classList.add("selected-emoji");
             });
 
-            // Set position and append to body
             button.style.position = "absolute";
             button.style.left = left;
             button.style.top = top;
@@ -365,15 +333,11 @@ function loadAllData() {
             document.body.appendChild(emojiNoteDiv);
         });
 
-        // Update the global counter to avoid ID collisions with new notes
         noteCounter = maxId;
     }
 }
 
-// --- Initialization ---
-// Add global drag-and-drop listeners once for the entire page.
 document.body.addEventListener("drop", handleDrop);
 document.body.addEventListener("dragover", handleDragOver);
 
-// Load any existing data from localStorage when the script runs.
 loadAllData();
