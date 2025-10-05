@@ -1,0 +1,166 @@
+.draggable-number-label {
+  position: absolute;
+  z-index: 999999;
+  background: linear-gradient(135deg, #e9c46a 0%, #f4a261 100%);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 50%;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.draggable-number-label:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.draggable-number-label:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+.draggable-number-label.has-note::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 14px;
+  background: #fbbf24;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.note-popup {
+  position: fixed;
+  z-index: 9999999;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  min-width: 320px;
+  max-width: 400px;
+}
+
+.note-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.note-popup-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+.note-popup-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.note-popup-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.note-popup-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.note-popup-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.note-popup-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.note-popup-button {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.note-popup-button.save {
+  background: linear-gradient(135deg, #E9C46A 0%, #F4A261 100%);
+  color: white;
+}
+
+.note-popup-button.save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.note-popup-button.delete {
+  background: #E76F51;
+  color: white;
+}
+
+.note-popup-button.delete:hover {
+  background: #E76F51;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.note-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999998;
+  backdrop-filter: blur(2px);
+}

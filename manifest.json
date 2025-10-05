@@ -1,43 +1,31 @@
 {
   "manifest_version": 3,
-  "name": "Anchor Notes",
+  "name": "Draggable Number Labels",
   "version": "1.0",
-  "description": "Add floating emoji notes to websites.",
-  "icons": {
-    "128": "assets/anchor.png"
-  },
-  "side_panel": {
-    "default_path": "/sidepanel.html"
-  },
-  "background": {
-    "service_worker": "bg.js"
-  },
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "description": "Add draggable numbered labels to DOM elements via context menu",
   "permissions": [
-    "storage",
     "contextMenus",
-    "sidePanel",
     "activeTab",
-    "tabs",
-    "scripting"
+    "scripting",
+    "storage"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
         "<all_urls>"
       ],
       "js": [
-        "/script/content.js"
+        "content.js"
       ],
-      "html": [
-        "/emoji.html"
+      "css": [
+        "styles.css"
       ]
     }
   ],
-  "options_page": "/newTab.html",
-  "chrome_url_overrides": {
-    "newtab": "/newTab.html"
+  "icons": {
+    "128": "anchor.png"
   }
 }
